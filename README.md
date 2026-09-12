@@ -155,9 +155,9 @@ perfection is worth less than a measured 19/25.)*
 
 ```
 OVERALL: __ / 53 correct
-  hard_negative:    __ / 25
-  answerable:       __ / 22
-  contradiction:    __ / 6
+  hard_negative:    25 / 25
+  answerable:       21 / 22
+  contradiction:    5 / 6
 ```
 
 If the hard-negative score is low, the system is over-answering — check
