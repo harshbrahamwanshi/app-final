@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulations Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F3F1EC;
+    --paper-raised: #FFFFFF;
+    --ink: #1E2430;
+    --ink-soft: #565F6E;
+    --rule: #D8D4C8;
+    --navy: #24344D;
+    --navy-deep: #172439;
+    --green: #2F6B4F;
+    --green-bg: #E7EFE9;
+    --amber: #7A6A3F;
+    --amber-bg: #F2ECDC;
+    --rust: #9B3E2C;
+    --rust-bg: #F5E4DE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+  }
+
+  header {
+    background: var(--navy-deep);
+    color: #EDE9DD;
+    padding: 28px 24px 24px;
+    border-bottom: 3px solid var(--navy);
+  }
+
+  header .inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 26px;
+    margin: 0 0 4px;
+    letter-spacing: 0.2px;
+  }
+
+  header p {
+    margin: 0;
+    color: #B9C2D4;
+    font-size: 14px;
+  }
+
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  .ask-box {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 18px;
+  }
+
+  .ask-box textarea {
+    width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    resize: vertical;
+    min-height: 64px;
+    color: var(--ink);
+    background: #FCFBF8;
+  }
+
+  .ask-box textarea:focus {
+    outline: 2px solid var(--navy);
+    outline-offset: 1px;
+  }
+
+  .ask-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 12px;
+  }
+
+  button.submit {
+    background: var(--navy-deep);
+    color: #EDE9DD;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  button.submit:hover { background: var(--navy); }
+  button.submit:disabled { opacity: 0.5; cursor: default; }
+
+  .samples { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sample-chip {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: #EBE7DC;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+  .sample-chip:hover { background: #E0DBCB; }
+  .sample-chip[data-cat="contradiction"] { border-color: #D9B8AC; }
+  .sample-chip[data-cat="hard_negative"] { border-color: #CFC6A3; }
+
+  .result {
+    margin-top: 24px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .badge.ANSWERED { background: var(--green-bg); color: var(--green); }
+  .badge.NOT_FOUND { background: var(--amber-bg); color: var(--amber); }
+  .badge.CONTRADICTION { background: var(--rust-bg); color: var(--rust); }
+  .badge.FLAGGED_UNVERIFIED { background: #ECECEC; color: #555; }
+
+  .answer-text {
+    font-family: 'Source Serif 4', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+
+  .not-found-note {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    background: var(--amber-bg);
+    border-left: 3px solid var(--amber);
+    padding: 12px 14px;
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+
+  .citations-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .citation-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--navy);
+    border-radius: 2px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .citation-card.contradiction-item { border-left-color: var(--rust); }
+
+  .citation-id {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .citation-id .verified-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--green);
+    background: var(--green-bg);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .citation-id .unverified-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--rust);
+    background: var(--rust-bg);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .citation-quote {
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .debug-toggle {
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    margin-top: 18px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .debug-panel {
+    display: none;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: #ECE9E0;
+    border-radius: 2px;
+    padding: 10px 12px;
+    font-family: monospace;
+  }
+  .debug-panel.open { display: block; }
+
+  .loading {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    font-style: italic;
+  }
+
+  .error {
+    color: var(--rust);
+    font-size: 14.5px;
+    background: var(--rust-bg);
+    padding: 10px 14px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1>Regulations Desk</h1>
+    <p>Answers built from the rulebook — every claim traceable to a clause, or flagged as unanswered.</p>
+  </div>
+</header>
+
+<main>
+  <div class="ask-box">
+    <textarea id="question" placeholder="Ask about attendance, exams, fees, hostel rules, scholarships, discipline…"></textarea>
+    <div class="ask-row">
+      <div class="samples" id="samples"></div>
+    </div>
+    <div class="ask-row">
+      <span></span>
+      <button class="submit" id="submitBtn">Ask</button>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+</main>
+
+<script>
+const resultEl = document.getElementById('result');
+const questionEl = document.getElementById('question');
+const submitBtn = document.getElementById('submitBtn');
+const samplesEl = document.getElementById('samples');
+
+async function loadSamples() {
+  try {
+    const res = await fetch('/sample_questions');
+    const samples = await res.json();
+    samplesEl.innerHTML = '';
+    samples.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'sample-chip';
+      chip.dataset.cat = s.category;
+      chip.textContent = s.question.length > 58 ? s.question.slice(0, 58) + '…' : s.question;
+      chip.title = s.question;
+      chip.onclick = () => { questionEl.value = s.question; ask(); };
+      samplesEl.appendChild(chip);
+    });
+  } catch (e) { /* non-fatal */ }
+}
+
+function statusLabel(status) {
+  return {
+    'ANSWERED': 'Answered',
+    'NOT_FOUND': 'Not covered by the rulebook',
+    'CONTRADICTION': 'Contradiction found',
+    'FLAGGED_UNVERIFIED': 'Withheld — citation could not be verified',
+  }[status] || status;
+}
+
+function render(data) {
+  const isContradiction = data.status === 'CONTRADICTION';
+  let html = `<span class="badge ${data.status}">${statusLabel(data.status)}</span>`;
+
+  if (data.status === 'ANSWERED' || data.status === 'CONTRADICTION') {
+    html += `<p class="answer-text">${escapeHtml(data.answer || '')}</p>`;
+  } else {
+    html += `<div class="not-found-note">${escapeHtml(data.not_found_reason || 'This question is not addressed by the corpus.')}</div>`;
+  }
+
+  if (data.citations && data.citations.length) {
+    html += `<div class="citations-label">${isContradiction ? 'Conflicting clauses' : 'Cited clauses'}</div>`;
+    data.citations.forEach(c => {
+      const verifiedTag = c.verified === true ? '<span class="verified-tag">verified</span>'
+                         : c.verified === false ? '<span class="unverified-tag">unverified</span>' : '';
+      html += `
+        <div class="citation-card ${isContradiction ? 'contradiction-item' : ''}">
+          <div class="citation-id"><span>${escapeHtml(c.chunk_id)}</span>${verifiedTag}</div>
+          <div class="citation-quote">"${escapeHtml(c.quote)}"</div>
+        </div>`;
+    });
+  }
+
+  html += `<div class="debug-toggle" onclick="toggleDebug()">Show retrieval details</div>`;
+  html += `<div class="debug-panel" id="debugPanel">
+    top retrieval score: ${data.top_retrieval_score?.toFixed(3)}<br>
+    chunks considered: ${data.retrieved_chunk_ids ? data.retrieved_chunk_ids.length : 0}<br>
+    ${data.retrieved_chunk_ids ? data.retrieved_chunk_ids.join('<br>') : ''}
+  </div>`;
+
+  resultEl.innerHTML = html;
+}
+
+function toggleDebug() {
+  document.getElementById('debugPanel').classList.toggle('open');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function ask() {
+  const question = questionEl.value.trim();
+  if (!question) return;
+
+  submitBtn.disabled = true;
+  resultEl.innerHTML = '<p class="loading">Searching the rulebook…</p>';
+
+  try {
+    const res = await fetch('/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+    });
+    if (!res.ok) throw new Error('Request failed');
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    resultEl.innerHTML = `<div class="error">Something went wrong reaching the assistant. ${escapeHtml(e.message || '')}</div>`;
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+submitBtn.onclick = ask;
+questionEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) ask();
+});
+
+loadSamples();
+</script>
+
+</body>
+</html>
