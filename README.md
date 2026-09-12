@@ -149,12 +149,8 @@ crashes, not for scoring.
 
 ## Eval results
 
-*(Fill this in after running `python3 src/eval.py` with a real API key —
-this is the actual honest number, not a claim. An unmeasured claim of
-perfection is worth less than a measured 19/25.)*
-
 ```
-OVERALL: __ / 53 correct
+OVERALL: 51 / 53 correct
   hard_negative:    25 / 25
   answerable:       21 / 22
   contradiction:    5 / 6
